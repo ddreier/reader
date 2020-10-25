@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"net/url"
 	"reader/data"
+	"time"
 )
 
 type feedsDatabase struct {
@@ -34,11 +35,22 @@ func (f *feedsDatabase) GetFeedList() ([]data.Feed, error) {
 	return feeds, nil
 }
 
+func (f *feedsDatabase) GetFeedById(id uuid.UUID) (*data.Feed, error) {
+	var feed data.Feed
+	err := f.db.One("ID", id, &feed)
+	if err != nil {
+		return nil, err
+	}
+
+	return &feed, nil
+}
+
 func (f *feedsDatabase) AddFeed(name string, addr url.URL) (*data.Feed, error) {
 	feed := data.Feed{
-		ID:   uuid.New(),
-		Name: name,
-		Addr: addr,
+		ID:      uuid.New(),
+		Name:    name,
+		Addr:    addr,
+		AddTime: time.Now().UTC(),
 	}
 
 	err := f.db.Save(&feed)
@@ -47,4 +59,16 @@ func (f *feedsDatabase) AddFeed(name string, addr url.URL) (*data.Feed, error) {
 	}
 
 	return &feed, nil
+}
+
+func (f *feedsDatabase) DeleteFeed(id uuid.UUID) error {
+	return f.db.DeleteStruct(&data.Feed{ID: id})
+}
+
+func (f *feedsDatabase) UpdateFeed(feed data.Feed) error {
+	feed.AddTime = time.Time{}
+
+	err := f.db.Update(feed)
+
+	return err
 }
