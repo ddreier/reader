@@ -13,5 +13,6 @@ type Feeds interface {
 	UpdateFeed(feed Feed) error
 }
 
-type FeedItems interface {
+type UnreadItems interface {
+	AddItem(item FeedItem) error
 }

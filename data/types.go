@@ -23,4 +23,5 @@ type FeedItem struct {
 	PubDate     time.Time
 	Description string
 	Content     string
+	Fetched     time.Time
 }
