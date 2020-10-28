@@ -109,12 +109,16 @@ var feedsRemoveCmd = &cobra.Command{
 var feedsRefreshCmd = &cobra.Command{
 	Use: "refresh",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		db, err := storm.NewStormFeedsDatabase("feeds.db")
+		feedDb, err := storm.NewStormFeedsDatabase("feeds.db")
+		if err != nil {
+			return err
+		}
+		unreadDb, err := storm.NewStormItemsDatabase("unread.db")
 		if err != nil {
 			return err
 		}
 
-		feeds, err := db.GetFeedList()
+		feeds, err := feedDb.GetFeedList()
 		if err != nil {
 			return err
 		}
@@ -128,11 +132,15 @@ var feedsRefreshCmd = &cobra.Command{
 			}
 
 			var latestItem gofeed.Item
+			newUnreadItems := 0
 			latestTime := f.MostRecentPubDate
 			for _, i := range feed.Items {
-				if i.PublishedParsed == nil {
-					fmt.Printf("%s %s %s\n", feed.Title, i.Updated, i.Title)
-					continue
+				if i.PublishedParsed.After(f.MostRecentPubDate) {
+					_, err := unreadDb.AddItem(f.ID, i.Title, i.Link, *i.PublishedParsed, i.Description, i.Content)
+					if err != nil {
+						fmt.Printf("Error adding new item, %s %s: %s\n", f.Name, i.Title, err)
+					}
+					newUnreadItems++
 				}
 				if latestTime.Before(*i.PublishedParsed) {
 					latestTime = *i.PublishedParsed
@@ -143,14 +151,15 @@ var feedsRefreshCmd = &cobra.Command{
 			if i > 0 {
 				fmt.Println("----------------------------------")
 			}
-			fmt.Printf("Feed Title: %s\n", feed.Title)
+			fmt.Printf("Feed Title:       %s\n", feed.Title)
 			fmt.Printf("Feed Description: %s\n", feed.Description)
-			fmt.Printf("Feed Updated: %s\n", feed.UpdatedParsed)
-			fmt.Printf("Latest Item: %s %s\n", latestItem.PublishedParsed, latestItem.Title)
+			fmt.Printf("Feed Updated:     %s\n", feed.UpdatedParsed)
+			fmt.Printf("Items Added:      %d\n", newUnreadItems)
+			fmt.Printf("Latest Item:      %s %s\n", latestItem.PublishedParsed, latestItem.Title)
 
 			f.CheckTime = time.Now()
 			f.MostRecentPubDate = latestTime
-			err = db.UpdateFeed(f)
+			err = feedDb.UpdateFeed(f)
 			if err != nil {
 				fmt.Printf("There was a problem updating the feed record for %s: %s\n", f.Name, err)
 			}
