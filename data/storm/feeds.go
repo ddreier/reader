@@ -47,10 +47,12 @@ func (f *feedsDatabase) GetFeedById(id uuid.UUID) (*data.Feed, error) {
 
 func (f *feedsDatabase) AddFeed(name string, addr url.URL) (*data.Feed, error) {
 	feed := data.Feed{
-		ID:      uuid.New(),
-		Name:    name,
-		Addr:    addr,
-		AddTime: time.Now().UTC(),
+		ID:                uuid.New(),
+		Name:              name,
+		Addr:              addr,
+		AddTime:           time.Now().UTC(),
+		CheckTime:         time.Time{},
+		MostRecentPubDate: time.Time{},
 	}
 
 	err := f.db.Save(&feed)
@@ -68,7 +70,7 @@ func (f *feedsDatabase) DeleteFeed(id uuid.UUID) error {
 func (f *feedsDatabase) UpdateFeed(feed data.Feed) error {
 	feed.AddTime = time.Time{}
 
-	err := f.db.Update(feed)
+	err := f.db.Update(&feed)
 
 	return err
 }

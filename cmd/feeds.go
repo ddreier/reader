@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"net/url"
 	"reader/data/storm"
+	"time"
 )
 
 var feedsCmd = &cobra.Command{
@@ -53,10 +54,12 @@ var feedsInfoCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("ID:    %s\n", feed.ID)
-		fmt.Printf("Name:  %s\n", feed.Name)
-		fmt.Printf("URL:   %s\n", feed.Addr.String())
-		fmt.Printf("Added: %s\n", feed.AddTime)
+		fmt.Printf("ID:               %s\n", feed.ID)
+		fmt.Printf("Name:             %s\n", feed.Name)
+		fmt.Printf("URL:              %s\n", feed.Addr.String())
+		fmt.Printf("Added:            %s\n", feed.AddTime)
+		fmt.Printf("Updated:          %s\n", feed.CheckTime)
+		fmt.Printf("Most Recent Item: %s\n", feed.MostRecentPubDate)
 		return nil
 	},
 }
@@ -124,12 +127,33 @@ var feedsRefreshCmd = &cobra.Command{
 				continue
 			}
 
+			var latestItem gofeed.Item
+			latestTime := f.MostRecentPubDate
+			for _, i := range feed.Items {
+				if i.PublishedParsed == nil {
+					fmt.Printf("%s %s %s\n", feed.Title, i.Updated, i.Title)
+					continue
+				}
+				if latestTime.Before(*i.PublishedParsed) {
+					latestTime = *i.PublishedParsed
+					latestItem = *i
+				}
+			}
+
 			if i > 0 {
 				fmt.Println("----------------------------------")
 			}
 			fmt.Printf("Feed Title: %s\n", feed.Title)
 			fmt.Printf("Feed Description: %s\n", feed.Description)
 			fmt.Printf("Feed Updated: %s\n", feed.UpdatedParsed)
+			fmt.Printf("Latest Item: %s %s\n", latestItem.PublishedParsed, latestItem.Title)
+
+			f.CheckTime = time.Now()
+			f.MostRecentPubDate = latestTime
+			err = db.UpdateFeed(f)
+			if err != nil {
+				fmt.Printf("There was a problem updating the feed record for %s: %s\n", f.Name, err)
+			}
 		}
 
 		return nil
