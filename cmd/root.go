@@ -12,11 +12,12 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(feedsCmd)
+	rootCmd.AddCommand(itemsCmd)
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
