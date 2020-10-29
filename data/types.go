@@ -20,7 +20,7 @@ type FeedItem struct {
 	Feed        uuid.UUID
 	Title       string
 	Link        string
-	PubDate     time.Time
+	PubDate     time.Time `storm:"index"`
 	Description string
 	Content     string
 	Fetched     time.Time

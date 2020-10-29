@@ -2,6 +2,7 @@ package storm
 
 import (
 	"github.com/asdine/storm/v3"
+	"github.com/asdine/storm/v3/q"
 	"github.com/google/uuid"
 	"reader/data"
 	"time"
@@ -42,4 +43,18 @@ func (i *itemsDatabase) AddItem(feed uuid.UUID, title string, link string, pub t
 	}
 
 	return item, nil
+}
+
+func (i *itemsDatabase) ListItems() ([]data.FeedItem, error) {
+	var items []data.FeedItem
+	err := i.db.AllByIndex("PubDate", &items)
+	if err != nil {
+		return nil, err
+	}
+
+	return items, nil
+}
+
+func (i *itemsDatabase) DeleteAllItems() error {
+	return i.db.Select(q.True()).Delete(&data.FeedItem{})
 }

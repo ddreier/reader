@@ -3,6 +3,7 @@ package data
 import (
 	"github.com/google/uuid"
 	"net/url"
+	"time"
 )
 
 type Feeds interface {
@@ -14,5 +15,7 @@ type Feeds interface {
 }
 
 type UnreadItems interface {
-	AddItem(item FeedItem) error
+	AddItem(feed uuid.UUID, title string, link string, pub time.Time, desc string, content string) (*FeedItem, error)
+	ListItems() ([]FeedItem, error)
+	DeleteAllItems() error
 }
