@@ -13,6 +13,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(feedsCmd)
 	rootCmd.AddCommand(itemsCmd)
+	rootCmd.AddCommand(serveCmd)
 }
 
 func Execute() {
