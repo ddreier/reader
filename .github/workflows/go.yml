@@ -16,7 +16,12 @@ jobs:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
-        go-version: ^1.15
+        go-version: ^1.19
+
+    - name: Set Up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -29,8 +34,14 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
+    - name: Webpack Build
+      working-directory: ./http/assets
+      run: |
+        npm install
+        npx webpack
+
+    - name: Go Build
       run: go build -v .
 
-    - name: Test
+    - name: Go Test
       run: go test -v .
