@@ -1,0 +1,26 @@
+{{ template "layout" . }}
+{{ define "content" }}
+    <div id="action-bar">
+        {{ template "feed_action_bar" }}
+    </div>
+
+    {{ if eq (len .Feeds) 0 }}
+    <div id="add-some-feeds">
+        <p>Hey, you should add some feeds. <a href="/feeds/new">Add</a></p>
+    </div>
+    {{ else }}
+    <div id="feeds-container">
+        <ul id="feed-list">
+            {{ range .Feeds }}
+            {{ template "feed" . }}
+            {{ end }}
+        </ul>
+    </div>
+    {{ end }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".status").tooltip();
+        });
+    </script>
+{{ end }}
