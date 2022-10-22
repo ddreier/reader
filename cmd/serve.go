@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
+	"reader/data/storm"
 	"reader/http"
 )
 
@@ -18,8 +19,19 @@ var serveCmd = &cobra.Command{
 		signal.Notify(c, os.Interrupt)
 		go func() { <-c; cancel() }()
 
+		fdb, err := storm.NewStormFeedsDatabase("feeds.db")
+		if err != nil {
+			return err
+		}
+		udb, err := storm.NewStormItemsDatabase("unread.db")
+		if err != nil {
+			return err
+		}
+
 		s := http.NewServer()
 		s.Addr = ":8888"
+		s.Feeds = fdb
+		s.UnreadItems = udb
 
 		if err := s.Open(); err != nil {
 			return err

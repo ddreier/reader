@@ -1,0 +1,34 @@
+{{ define "feed" }}
+<li class="feed" id="feed-{{ .ID }}" data-id="{{ .ID }}">
+    <div class="row-fluid feed-line">
+        <div class="span7 feed-title-container">
+            <p class="feed-title">
+            <a href="/feed/{{ .ID }}">
+                {{ .Name }}
+            </a>
+            </p>
+        </div>
+        <div class="span3 feed-last-updated">
+            <span class="last-updated">Last updated at</span>
+            <span class="last-updated-time">
+        {{ if .MostRecentPubDate.IsZero }}
+            Never
+        {{ else }}
+            {{ .MostRecentPubDate.Format "Jan 02, 2006" }}
+        {{ end }}
+      </span>
+        </div>
+        <div class="span2">
+      <span class="read-feed">
+        <a class="icon-external-link" href="{{ .Addr.String }}"></a>
+      </span>
+            <span class="edit-feed">
+        <a class="icon-edit" href="/feeds/{{ .ID }}/edit"></a>
+      </span>
+            <span class="remove-feed">
+        <a class="icon-remove"></a>
+      </span>
+        </div>
+    </div>
+</li>
+{{ end }}

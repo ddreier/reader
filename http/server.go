@@ -78,7 +78,37 @@ func NewServer() *Server {
 			w.WriteHeader(500)
 			return
 		}
-	})
+	}).Methods("GET")
+
+	s.router.HandleFunc("/feeds", func(w http.ResponseWriter, r *http.Request) {
+		t, ok := templates["feeds.tmpl"]
+		if !ok {
+			log.Printf("Failed to load template feeds.tmpl")
+			w.WriteHeader(500)
+			return
+		}
+
+		feeds, err := s.Feeds.GetFeedList()
+		if err != nil {
+			log.Printf("Error getting feed list from DB: %s", err)
+			w.WriteHeader(500)
+			return
+		}
+
+		templateData := struct {
+			Test  string
+			Feeds []data.Feed
+		}{
+			Test:  "Feeds list!",
+			Feeds: feeds,
+		}
+
+		if err := t.Execute(w, templateData); err != nil {
+			log.Printf("Failed executing template feeds.tmpl: %s", err)
+			w.WriteHeader(500)
+			return
+		}
+	}).Methods("GET")
 
 	return s
 }
@@ -118,7 +148,7 @@ func LoadTemplates() error {
 			continue
 		}
 
-		pt, err := template.ParseFS(files, templatesDir+"/"+tmpl.Name(), templatesDir+"/layouts/*")
+		pt, err := template.ParseFS(files, templatesDir+"/"+tmpl.Name(), templatesDir+"/layouts/*", templatesDir+"/partials/*")
 		if err != nil {
 			return err
 		}
