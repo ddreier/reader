@@ -1,4 +1,4 @@
-{{define "layout"}}
+{{ define "layout" }}
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,14 +15,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <link href="stylesheets/application.css" rel="stylesheet" />
-    <link href="stylesheets/bootstrap-min.css" rel="stylesheet" />
-    <link href="stylesheets/flat-ui-no-icons.css" rel="stylesheet" />
-    <link href="stylesheets/font-awesome-min.css" rel="stylesheet" />
-    <link href="stylesheets/lato-fonts.css" rel="stylesheet" />
-    <link href="stylesheets/reenie-beanie-font.css" rel="stylesheet" />
-    <script src="dist/main.js"></script>
-    <script src="dist/vendor.js"></script>
+    <link href="/stylesheets/application.css" rel="stylesheet" />
+    <link href="/stylesheets/bootstrap-min.css" rel="stylesheet" />
+    <link href="/stylesheets/flat-ui-no-icons.css" rel="stylesheet" />
+    <link href="/stylesheets/font-awesome-min.css" rel="stylesheet" />
+    <link href="/stylesheets/lato-fonts.css" rel="stylesheet" />
+    <link href="/stylesheets/reenie-beanie-font.css" rel="stylesheet" />
+    <script src="/dist/main.js"></script>
+    <script src="/dist/vendor.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -32,7 +32,7 @@
         <div class="container">
             <div class="row-fluid">
                 <div class="span12">
-                    {{template "content" .}}
+                    {{ template "content" . }}
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
 </div>
 
 <div id="footer">
-    <%= render_partial :footer %>
+    {{ template "footer" }}
 </div>
 
 <!--<script>-->
@@ -51,4 +51,4 @@
 <!--</script>-->
 </body>
 </html>
-{{end}}
+{{ end }}

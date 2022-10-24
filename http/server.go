@@ -11,6 +11,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"reader/data"
 	"reader/http/assets"
@@ -88,6 +89,28 @@ func NewServer() *Server {
 			return
 		}
 
+		if r.Method == "POST" {
+			if err := r.ParseForm(); err != nil {
+				log.Printf("POST /form: Unable to parse request body: %s", err)
+				w.WriteHeader(500)
+				return
+			}
+
+			// TODO going to have to figure out how to get a flash working w/ the cookie
+			u, err := url.Parse(r.FormValue("feed_url"))
+			if err != nil {
+				log.Printf("POST /feed: error parsing feed url: %s", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			_, err = s.Feeds.AddFeed("test", *u)
+			if err != nil {
+				log.Printf("POST /form: error adding feed to DB: %s", err)
+				return
+			}
+		}
+
 		feeds, err := s.Feeds.GetFeedList()
 		if err != nil {
 			log.Printf("Error getting feed list from DB: %s", err)
@@ -108,7 +131,24 @@ func NewServer() *Server {
 			w.WriteHeader(500)
 			return
 		}
-	}).Methods("GET")
+	}).Methods("GET", "POST")
+
+	// TODO handle POST /feeds
+
+	s.router.HandleFunc("/feeds/new", func(w http.ResponseWriter, r *http.Request) {
+		t, ok := templates["add_feed.tmpl"]
+		if !ok {
+			log.Printf("Failed to load template add_feed.tmpl")
+			w.WriteHeader(500)
+			return
+		}
+
+		if err := t.Execute(w, nil); err != nil {
+			log.Printf("Failed executing template add_feed.tmpl: %s", err)
+			w.WriteHeader(500)
+			return
+		}
+	})
 
 	return s
 }

@@ -1,0 +1,24 @@
+{{ define "footer" }}
+<div class="container">
+    <div class="row-fluid">
+        <div class="span6">
+            <ul class="footer-links">
+{{/*                <% if current_user %>*/}}
+                <li><a href="/logout">Logout</a></li>
+                <li class="muted">·</li>
+                <li><a href="/feeds/import">Import</a></li>
+                <li class="muted">·</li>
+                <li><a href="/feeds/export">Export</a></li>
+                <li class="muted">·</li>
+                <li><a href="#shortcuts" data-toggle="modal"><i class="icon-keyboard"></i></a></li>
+{{/*                <% end %>*/}}
+            </ul>
+        </div>
+        <div class="span6">
+            <p class="pull-right">
+                <b>Hey!</b> Get back to work, slacker!
+            </p>
+        </div>
+    </div>
+</div>
+{{ end }}
