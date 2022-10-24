@@ -1,0 +1,22 @@
+{{ template "layout" . }}
+{{ define "content" }}
+    <div id="action-bar">
+        {{ template "feed_action_bar" }}
+    </div>
+
+    <div class="setup" id="add-feed-container">
+        <h1>Need new stories?</h1>
+        <hr />
+        <p>Paste in the URL of the blog you want to read.</p>
+        <hr />
+        <form id="add-feed-setup" method="POST" action="/feeds">
+            <div class="control-group">
+                <input name="feed_url" id="feed-url" type="text" autofocus/>
+                <i class="icon-rss field-icon"></i>
+                <label id="feed_url-label" class="field-label" for="feed_url">Feed URL</label>
+            </div>
+
+            <input type="submit" id="submit" class="btn btn-primary pull-right" value="Add"/>
+        </form>
+    </div>
+{{ end }}
