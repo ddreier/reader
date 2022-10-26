@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 
 module.exports = {
+    optimization: {
+        minimize: false
+    },
     entry: {
         main: "./javascripts/application.js",
         vendor: [
@@ -15,5 +18,8 @@ module.exports = {
     },
     plugins: [
         new webpack.IgnorePlugin({resourceRegExp: /underscore/})
-    ]
+    ],
+    output: {
+        publicPath: "/"
+    }
 }

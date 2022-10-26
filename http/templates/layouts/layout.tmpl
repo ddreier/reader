@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="/assets/img/favicon.png">
     <link rel="apple-touch-icon-precomposed" href="/assets/img/apple-touch-icon-precomposed.png">
 
-    <link rel="manifest" href="/assets/manifest.json">
+{{/*    <link rel="manifest" href="/assets/manifest.json">*/}}
 
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,8 +21,18 @@
     <link href="/stylesheets/font-awesome-min.css" rel="stylesheet" />
     <link href="/stylesheets/lato-fonts.css" rel="stylesheet" />
     <link href="/stylesheets/reenie-beanie-font.css" rel="stylesheet" />
-    <script src="/dist/main.js"></script>
-    <script src="/dist/vendor.js"></script>
+
+{{/*    <script src="/dist/vendor.js"></script>*/}}
+    <script src="/javascripts/jquery-min.js"></script>
+    <script src="/javascripts/bootstrap-min.js"></script>
+    <script src="/javascripts/bootstrap.file-input.js"></script>
+    <script src="/javascripts/mousetrap-min.js"></script>
+    <script src="/javascripts/jquery-visible-min.js"></script>
+    <script src="/javascripts/underscore-min.js"></script>
+    <script src="/javascripts/backbone-min.js"></script>
+
+    <script src="/javascripts/application.js"></script>
+{{/*    <script src="/dist/main.js"></script>*/}}
 </head>
 <body>
 <div id="wrap">
@@ -45,10 +55,10 @@
     {{ template "footer" }}
 </div>
 
-<!--<script>-->
-<!--    window.i18n = {};-->
-<!--    window.i18n.titleName = "<%= t('layout.title') %>";-->
-<!--</script>-->
+<script>
+    window.i18n = {};
+    window.i18n.titleName = "Go Stringer";
+</script>
 </body>
 </html>
 {{ end }}
