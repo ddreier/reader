@@ -1,0 +1,16 @@
+{{ template "layout" . }}
+{{ define "content" }}
+    <div id="action-bar">
+        {{ template "action_bar" }}
+    </div>
+
+    {{ if eq (len .UnreadStories) 0 }}
+    {{ template "zen" }}
+    {{ else }}
+    {{ template "stories" . }}
+    <div id="stories">
+        <ul id="story-list">
+        </ul>
+    </div>
+    {{ end }}
+{{ end }}
